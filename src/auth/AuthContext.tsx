@@ -7,6 +7,7 @@ import {
   type ReactNode,
 } from 'react'
 import {
+  base64URLStringToBuffer,
   startAuthentication,
   startRegistration,
 } from '@simplewebauthn/browser'
@@ -106,14 +107,13 @@ function encodeInfo(value: string): ArrayBuffer {
 }
 
 async function deriveDek(
-  prfOutputB64u: string,
+  prfOutput: BufferSource,
   hkdfSaltB64u: string,
 ): Promise<CryptoKey> {
-  const prfBuffer = base64urlToBuffer(prfOutputB64u)
   const saltBuffer = base64urlToBuffer(hkdfSaltB64u)
   const prfKey = await crypto.subtle.importKey(
     'raw',
-    prfBuffer,
+    prfOutput,
     'HKDF',
     false,
     ['deriveKey'],
@@ -134,9 +134,9 @@ async function deriveDek(
 
 function readPrfFirst(
   response: RegistrationResponseJSON | AuthenticationResponseJSON,
-): string | undefined {
+): BufferSource | undefined {
   const ext = response.clientExtensionResults as unknown as
-    | { prf?: { results?: { first?: string } } }
+    | { prf?: { results?: { first?: BufferSource } } }
     | undefined
   return ext?.prf?.results?.first
 }
@@ -147,13 +147,18 @@ function withPrfExtension<
   },
 >(options: T, prfSalt: string): T {
   const existing = (options.extensions ?? {}) as Record<string, unknown>
+  // WebAuthn requires prf.eval.first as a BufferSource at the native API
+  // boundary. @simplewebauthn/browser passes extensions through unchanged,
+  // so we must decode the base64url salt here even though the JSON type
+  // declares it as a string.
+  const prfFirstBuffer = base64URLStringToBuffer(prfSalt)
   return {
     ...options,
     extensions: {
       ...existing,
-      prf: { eval: { first: prfSalt } },
+      prf: { eval: { first: prfFirstBuffer } },
     },
-  } as T
+  } as unknown as T
 }
 
 async function prfPlatformLikelySupported(): Promise<boolean> {
