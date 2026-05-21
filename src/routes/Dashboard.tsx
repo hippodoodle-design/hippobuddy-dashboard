@@ -188,7 +188,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-purple-600 via-purple-500 to-teal-400 p-6">
       <div className="mx-auto max-w-3xl bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl px-6 sm:px-10 py-8 sm:py-12">
-        <div className="flex items-center justify-between gap-4 mb-6">
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
           <div>
             <h1 className="text-2xl font-semibold text-slate-900 tracking-tight">
               Your credentials
@@ -197,12 +197,18 @@ export default function Dashboard() {
               Encryption key in memory. Passwords decrypt only when you tap Reveal.
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Link
               to="/import"
               className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800"
             >
               Import more
+            </Link>
+            <Link
+              to="/add-device?mode=approve"
+              className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            >
+              Add another device
             </Link>
             <button
               type="button"

@@ -6,6 +6,7 @@ import Enrol from './routes/Enrol'
 import Login from './routes/Login'
 import Dashboard from './routes/Dashboard'
 import Import from './routes/Import'
+import AddDevice from './routes/AddDevice'
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/enrol" element={<Enrol />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/add-device" element={<AddDevice />} />
           <Route
             path="/dashboard"
             element={

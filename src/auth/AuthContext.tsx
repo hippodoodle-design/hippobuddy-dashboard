@@ -33,12 +33,23 @@ type AuthState = {
 
 export type AuthResult = { ok: true } | { ok: false; reason: string }
 
+export type BeginRegistrationResponse = {
+  options?: PublicKeyCredentialCreationOptionsJSON
+  publicKey?: PublicKeyCredentialCreationOptionsJSON
+  prfSalt?: string
+  userId?: string
+  challenge_id?: string
+}
+
 type AuthContextValue = AuthState & {
   isAuthenticated: boolean
   enrol: () => Promise<AuthResult>
   login: () => Promise<AuthResult>
   logout: () => void
   apiFetch: (path: string, init?: RequestInit) => Promise<Response>
+  completeEnrolmentFromBegin: (
+    begin: BeginRegistrationResponse,
+  ) => Promise<AuthResult>
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
@@ -147,13 +158,6 @@ async function postJson<T>(path: string, body: unknown): Promise<T> {
   return (await res.json()) as T
 }
 
-type BeginRegistrationResponse = {
-  options?: PublicKeyCredentialCreationOptionsJSON
-  publicKey?: PublicKeyCredentialCreationOptionsJSON
-  prfSalt?: string
-  userId?: string
-}
-
 type BeginAuthenticationResponse = {
   options?: PublicKeyCredentialRequestOptionsJSON
   publicKey?: PublicKeyCredentialRequestOptionsJSON
@@ -209,16 +213,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     sessionToken: null,
   })
 
-  const enrol = useCallback<() => Promise<AuthResult>>(async () => {
+  const completeEnrolmentFromBegin = useCallback<
+    (begin: BeginRegistrationResponse) => Promise<AuthResult>
+  >(async (begin) => {
     try {
       if (!(await prfPlatformLikelySupported())) {
         return { ok: false, reason: PRF_UNSUPPORTED_MESSAGE }
       }
-
-      const begin = await postJson<BeginRegistrationResponse>(
-        '/buddy/v2/passkeys/register/begin',
-        {},
-      )
       const options = extractCreationOptions(begin)
       if (!options) {
         return { ok: false, reason: 'register/begin returned no options' }
@@ -250,7 +251,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       const finish = await postJson<FinishResponse>(
         '/buddy/v2/passkeys/register/finish',
-        { userId: userIdFromBegin, attestation },
+        { userId: userIdFromBegin, attestation, response: attestation },
       )
       const resolvedUserId = finish.userId ?? userIdFromBegin ?? null
       const sessionToken = extractSessionToken(finish)
@@ -263,6 +264,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return { ok: false, reason: message }
     }
   }, [])
+
+  const enrol = useCallback<() => Promise<AuthResult>>(async () => {
+    try {
+      const begin = await postJson<BeginRegistrationResponse>(
+        '/buddy/v2/passkeys/register/begin',
+        {},
+      )
+      return await completeEnrolmentFromBegin(begin)
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : 'unexpected error during enrolment'
+      return { ok: false, reason: message }
+    }
+  }, [completeEnrolmentFromBegin])
 
   const login = useCallback<() => Promise<AuthResult>>(async () => {
     try {
@@ -307,7 +322,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       const finish = await postJson<FinishResponse>(
         '/buddy/v2/passkeys/authenticate/finish',
-        { assertion },
+        { assertion, response: assertion },
       )
       const resolvedUserId = finish.userId ?? null
       const sessionToken = extractSessionToken(finish)
@@ -354,8 +369,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       login,
       logout,
       apiFetch,
+      completeEnrolmentFromBegin,
     }),
-    [state, enrol, login, logout, apiFetch],
+    [state, enrol, login, logout, apiFetch, completeEnrolmentFromBegin],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
