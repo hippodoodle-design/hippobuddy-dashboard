@@ -25,6 +25,8 @@ const RP_ID =
 const PRF_UNSUPPORTED_MESSAGE =
   "Your browser doesn't support the WebAuthn PRF extension yet. HippoBuddy needs this to keep your passwords encrypted on your device. Please try Safari 17+ or Chrome."
 
+type DeviceKind = 'phone' | 'tablet' | 'laptop' | 'desktop' | 'other'
+
 type AuthState = {
   dek: CryptoKey | null
   userId: string | null
@@ -53,6 +55,38 @@ type AuthContextValue = AuthState & {
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
+
+function detectDeviceKind(): DeviceKind {
+  if (typeof navigator === 'undefined') return 'other'
+  const ua = navigator.userAgent
+  if (/iPad/i.test(ua) || (/Android/i.test(ua) && !/Mobile/i.test(ua))) {
+    return 'tablet'
+  }
+  if (/iPhone|iPod|Android.*Mobile|Mobile.*Firefox/i.test(ua)) {
+    return 'phone'
+  }
+  if (/Macintosh|Mac OS X|Linux/i.test(ua)) return 'laptop'
+  if (/Windows NT/i.test(ua)) return 'laptop'
+  return 'other'
+}
+
+function detectDeviceName(): string {
+  if (typeof navigator === 'undefined') return 'New device'
+  const ua = navigator.userAgent
+  if (/iPhone/i.test(ua)) return 'iPhone'
+  if (/iPad/i.test(ua)) return 'iPad'
+  if (/Android/i.test(ua) && /Mobile/i.test(ua)) return 'Android phone'
+  if (/Android/i.test(ua)) return 'Android tablet'
+  if (/Macintosh|Mac OS X/i.test(ua)) return 'Mac'
+  if (/Windows NT/i.test(ua)) return 'Windows PC'
+  if (/Linux/i.test(ua)) return 'Linux machine'
+  return 'New device'
+}
+
+function detectPlatformHint(): string | null {
+  if (typeof navigator === 'undefined') return null
+  return navigator.userAgent.slice(0, 180)
+}
 
 function base64urlToBuffer(b64u: string): ArrayBuffer {
   const b64 = b64u.replace(/-/g, '+').replace(/_/g, '/')
@@ -251,7 +285,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       const finish = await postJson<FinishResponse>(
         '/buddy/v2/passkeys/register/finish',
-        { userId: userIdFromBegin, attestation, response: attestation },
+        { response: attestation },
       )
       const resolvedUserId = finish.userId ?? userIdFromBegin ?? null
       const sessionToken = extractSessionToken(finish)
@@ -269,7 +303,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const begin = await postJson<BeginRegistrationResponse>(
         '/buddy/v2/passkeys/register/begin',
-        {},
+        {
+          display_name: detectDeviceName(),
+          device_kind: detectDeviceKind(),
+          platform_hint: detectPlatformHint(),
+        },
       )
       return await completeEnrolmentFromBegin(begin)
     } catch (err) {
@@ -322,7 +360,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       const finish = await postJson<FinishResponse>(
         '/buddy/v2/passkeys/authenticate/finish',
-        { assertion, response: assertion },
+        { response: assertion },
       )
       const resolvedUserId = finish.userId ?? null
       const sessionToken = extractSessionToken(finish)
