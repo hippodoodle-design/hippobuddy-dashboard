@@ -186,7 +186,7 @@ export default function Dashboard() {
   }, [credentials])
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-purple-600 via-purple-500 to-teal-400 p-6">
+    <div className="min-h-screen w-full bg-gradient-to-br from-sky-500 via-teal-400 to-emerald-400 p-6">
       <div className="mx-auto max-w-3xl bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl px-6 sm:px-10 py-8 sm:py-12">
         <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
           <div>

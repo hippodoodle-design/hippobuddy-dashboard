@@ -15,7 +15,7 @@ Front-end for the HippoBuddy v2 patient/owner dashboard. This repo is the SPA th
 
 This phase creates the empty shell:
 
-- Four routes wired up (Home, Enrol, Login, Dashboard) — each renders the same "HippoBuddy v2 — coming soon" placeholder card on a purple-to-teal gradient.
+- Four routes wired up (Home, Enrol, Login, Dashboard) — each renders the same "HippoBuddy v2 — coming soon" placeholder card on a calming sky → teal → emerald gradient.
 - No auth, no API calls, no real UI yet.
 - Pushed to `hippodoodle-design/hippobuddy-dashboard`, deployed to its default `*.vercel.app` URL.
 - **No custom domain** — that's a Phase 2b prerequisite, configured separately.
@@ -56,3 +56,7 @@ npm run preview  # serve the production build locally
 - Whole-file writes only when editing existing scaffolded files — Amanda is dyslexic and partial-edit churn is hard to follow.
 - No emojis in rendered UI.
 - Never re-litigate the locked decisions above without an explicit prompt from Amanda.
+
+## Locked design principles
+
+- **Colours that calm > colours that intensify, especially during security-sensitive flows.** Locked 2026-05-21 after Amanda's feedback on the original purple gradient. Users enrolling passkeys, approving devices, signing in are in a slightly anxious state — the UI should feel reassuring, not intense. Current palette is sky `#0EA5E9` → teal `#2DD4BF` → emerald `#34D399` (background), with teal `#0D9488` for primary actions and sky `#0EA5E9` family for informational panels. Errors stay warm (red/rose). Any future colour decisions defer to this principle.

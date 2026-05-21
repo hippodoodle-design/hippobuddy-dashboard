@@ -233,7 +233,7 @@ export default function Import() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-purple-600 via-purple-500 to-teal-400 p-6">
+      <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-sky-500 via-teal-400 to-emerald-400 p-6">
         <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl px-10 py-12 max-w-md w-full text-center">
           <h1 className="text-xl font-semibold text-slate-900">Sign in first</h1>
           <p className="mt-3 text-sm text-slate-600">
@@ -251,7 +251,7 @@ export default function Import() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-purple-600 via-purple-500 to-teal-400 p-6">
+    <div className="min-h-screen w-full bg-gradient-to-br from-sky-500 via-teal-400 to-emerald-400 p-6">
       <div className="mx-auto max-w-4xl bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl px-6 sm:px-10 py-8 sm:py-12">
         <div className="flex items-center justify-between gap-4 mb-6">
           <h1 className="text-2xl font-semibold text-slate-900 tracking-tight">
@@ -288,7 +288,7 @@ export default function Import() {
                 onChange={(e) => setText(e.target.value)}
                 rows={10}
                 placeholder="Paste anything that contains logins…"
-                className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm font-mono leading-relaxed focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm font-mono leading-relaxed focus:outline-none focus:ring-2 focus:ring-teal-500"
               />
               <div
                 className={`mt-1 text-xs ${
@@ -371,7 +371,7 @@ export default function Import() {
                           onChange={(e) =>
                             updateEntry(idx, 'site', e.target.value)
                           }
-                          className="w-32 rounded-md border border-slate-200 px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-purple-500"
+                          className="w-32 rounded-md border border-slate-200 px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-teal-500"
                         />
                       </td>
                       <td className="px-2 py-1.5">
@@ -380,7 +380,7 @@ export default function Import() {
                           onChange={(e) =>
                             updateEntry(idx, 'username', e.target.value)
                           }
-                          className="w-40 rounded-md border border-slate-200 px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-purple-500"
+                          className="w-40 rounded-md border border-slate-200 px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-teal-500"
                         />
                       </td>
                       <td className="px-2 py-1.5">
@@ -389,7 +389,7 @@ export default function Import() {
                           onChange={(e) =>
                             updateEntry(idx, 'password', e.target.value)
                           }
-                          className="w-40 rounded-md border border-slate-200 px-2 py-1 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-purple-500"
+                          className="w-40 rounded-md border border-slate-200 px-2 py-1 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-teal-500"
                         />
                       </td>
                       <td className="px-2 py-1.5">
@@ -398,7 +398,7 @@ export default function Import() {
                           onChange={(e) =>
                             updateEntry(idx, 'url', e.target.value)
                           }
-                          className="w-44 rounded-md border border-slate-200 px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-purple-500"
+                          className="w-44 rounded-md border border-slate-200 px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-teal-500"
                         />
                       </td>
                       <td className="px-2 py-1.5">
@@ -407,7 +407,7 @@ export default function Import() {
                           onChange={(e) =>
                             updateEntry(idx, 'notes', e.target.value)
                           }
-                          className="w-48 rounded-md border border-slate-200 px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-purple-500"
+                          className="w-48 rounded-md border border-slate-200 px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-teal-500"
                         />
                       </td>
                       <td className="px-2 py-1.5 text-right">

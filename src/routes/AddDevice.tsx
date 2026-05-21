@@ -297,7 +297,7 @@ function RequestSubflow() {
   }, [step])
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-purple-600 via-purple-500 to-teal-400 p-6">
+    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-sky-500 via-teal-400 to-emerald-400 p-6">
       <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl px-8 sm:px-10 py-10 sm:py-12 max-w-lg w-full">
         <h1 className="text-2xl font-semibold text-slate-900 tracking-tight text-center">
           Enrol this device
@@ -318,7 +318,7 @@ function RequestSubflow() {
                 onChange={(e) => setDisplayName(e.target.value)}
                 placeholder="e.g. Amanda's iPhone"
                 maxLength={120}
-                className="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
               />
             </div>
             <div>
@@ -328,7 +328,7 @@ function RequestSubflow() {
               <select
                 value={deviceKind}
                 onChange={(e) => setDeviceKind(e.target.value as DeviceKind)}
-                className="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
               >
                 {(Object.keys(DEVICE_KIND_LABELS) as DeviceKind[]).map((k) => (
                   <option key={k} value={k}>
@@ -341,7 +341,7 @@ function RequestSubflow() {
               type="button"
               onClick={beginRequest}
               disabled={!displayName.trim()}
-              className="w-full rounded-xl bg-purple-600 px-6 py-3 text-base font-semibold text-white shadow-md transition hover:bg-purple-700 disabled:cursor-not-allowed disabled:opacity-60"
+              className="w-full rounded-xl bg-teal-600 px-6 py-3 text-base font-semibold text-white shadow-md transition hover:bg-teal-700 disabled:cursor-not-allowed disabled:opacity-60"
             >
               Get an approval code
             </button>
@@ -349,7 +349,7 @@ function RequestSubflow() {
               Already enrolled here?{' '}
               <Link
                 to="/login"
-                className="font-medium text-purple-700 hover:underline"
+                className="font-medium text-teal-700 hover:underline"
               >
                 Sign in
               </Link>
@@ -371,7 +371,7 @@ function RequestSubflow() {
 
         {step.kind === 'finishing' && (
           <div className="mt-10 text-center space-y-3">
-            <div className="mx-auto h-10 w-10 rounded-full border-4 border-slate-200 border-t-purple-600 animate-spin" />
+            <div className="mx-auto h-10 w-10 rounded-full border-4 border-slate-200 border-t-teal-600 animate-spin" />
             <p className="text-sm text-slate-700">
               Approval received. Creating your passkey on this device…
             </p>
@@ -486,7 +486,7 @@ function WaitingPanel({
         </p>
       </div>
 
-      <div className="rounded-lg border border-purple-200 bg-purple-50 px-4 py-3 text-sm text-purple-900">
+      <div className="rounded-lg border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-sky-900">
         Waiting for approval from your other device… this page will continue
         automatically once you've approved it.
       </div>
@@ -563,7 +563,7 @@ function ApproveSubflow() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-purple-600 via-purple-500 to-teal-400 p-6">
+      <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-sky-500 via-teal-400 to-emerald-400 p-6">
         <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl px-10 py-12 max-w-md w-full text-center">
           <h1 className="text-xl font-semibold text-slate-900">
             Sign in first
@@ -589,7 +589,7 @@ function ApproveSubflow() {
   }
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-purple-600 via-purple-500 to-teal-400 p-6">
+    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-sky-500 via-teal-400 to-emerald-400 p-6">
       <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl px-8 sm:px-10 py-10 sm:py-12 max-w-md w-full">
         <h1 className="text-2xl font-semibold text-slate-900 tracking-tight text-center">
           Approve a new device
@@ -610,7 +610,7 @@ function ApproveSubflow() {
               autoCapitalize="off"
               autoCorrect="off"
               spellCheck={false}
-              className="w-full rounded-xl border border-slate-300 px-4 py-3 text-base font-mono focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full rounded-xl border border-slate-300 px-4 py-3 text-base font-mono focus:outline-none focus:ring-2 focus:ring-teal-500"
             />
           </div>
 
@@ -618,7 +618,7 @@ function ApproveSubflow() {
             type="button"
             onClick={submit}
             disabled={step.kind === 'working' || step.kind === 'done'}
-            className="w-full rounded-xl bg-purple-600 px-6 py-3 text-base font-semibold text-white shadow-md transition hover:bg-purple-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="w-full rounded-xl bg-teal-600 px-6 py-3 text-base font-semibold text-white shadow-md transition hover:bg-teal-700 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {step.kind === 'working' ? 'Approving…' : 'Approve this device'}
           </button>

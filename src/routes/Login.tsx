@@ -25,7 +25,7 @@ export default function Login() {
   const isWorking = state.kind === 'working'
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-purple-600 via-purple-500 to-teal-400 p-6">
+    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-sky-500 via-teal-400 to-emerald-400 p-6">
       <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl px-10 py-12 max-w-md w-full">
         <h1 className="text-2xl font-semibold text-slate-900 tracking-tight text-center">
           Sign in
@@ -38,7 +38,7 @@ export default function Login() {
           type="button"
           onClick={handleLogin}
           disabled={isWorking}
-          className="mt-8 w-full rounded-xl bg-purple-600 px-6 py-3 text-base font-semibold text-white shadow-md transition hover:bg-purple-700 disabled:cursor-not-allowed disabled:opacity-60"
+          className="mt-8 w-full rounded-xl bg-teal-600 px-6 py-3 text-base font-semibold text-white shadow-md transition hover:bg-teal-700 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isWorking ? 'Signing in…' : 'Sign in with passkey'}
         </button>
@@ -54,7 +54,7 @@ export default function Login() {
 
         <p className="mt-8 text-center text-sm text-slate-600">
           No passkey yet?{' '}
-          <Link to="/enrol" className="font-medium text-purple-700 hover:underline">
+          <Link to="/enrol" className="font-medium text-teal-700 hover:underline">
             Enrol this device
           </Link>
         </p>
