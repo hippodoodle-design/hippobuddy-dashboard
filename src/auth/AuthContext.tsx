@@ -28,6 +28,7 @@ const PRF_UNSUPPORTED_MESSAGE =
 type AuthState = {
   dek: CryptoKey | null
   userId: string | null
+  sessionToken: string | null
 }
 
 export type AuthResult = { ok: true } | { ok: false; reason: string }
@@ -37,6 +38,7 @@ type AuthContextValue = AuthState & {
   enrol: () => Promise<AuthResult>
   login: () => Promise<AuthResult>
   logout: () => void
+  apiFetch: (path: string, init?: RequestInit) => Promise<Response>
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
@@ -129,6 +131,7 @@ async function postJson<T>(path: string, body: unknown): Promise<T> {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
+    credentials: 'include',
   })
   if (!res.ok) {
     let detail = ''
@@ -157,7 +160,15 @@ type BeginAuthenticationResponse = {
   prfSalt?: string
 }
 
-type FinishResponse = { ok?: boolean; userId?: string }
+type FinishResponse = {
+  ok?: boolean
+  userId?: string
+  token?: string
+  sessionToken?: string
+  accessToken?: string
+  bearer?: string
+  session?: { token?: string; accessToken?: string }
+}
 
 function extractCreationOptions(
   body: BeginRegistrationResponse,
@@ -179,8 +190,24 @@ function extractRequestOptions(
   return null
 }
 
+function extractSessionToken(finish: FinishResponse): string | null {
+  return (
+    finish.token ??
+    finish.sessionToken ??
+    finish.accessToken ??
+    finish.bearer ??
+    finish.session?.token ??
+    finish.session?.accessToken ??
+    null
+  )
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<AuthState>({ dek: null, userId: null })
+  const [state, setState] = useState<AuthState>({
+    dek: null,
+    userId: null,
+    sessionToken: null,
+  })
 
   const enrol = useCallback<() => Promise<AuthResult>>(async () => {
     try {
@@ -226,8 +253,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         { userId: userIdFromBegin, attestation },
       )
       const resolvedUserId = finish.userId ?? userIdFromBegin ?? null
+      const sessionToken = extractSessionToken(finish)
 
-      setState({ dek, userId: resolvedUserId })
+      setState({ dek, userId: resolvedUserId, sessionToken })
       return { ok: true }
     } catch (err) {
       const message =
@@ -282,8 +310,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         { assertion },
       )
       const resolvedUserId = finish.userId ?? null
+      const sessionToken = extractSessionToken(finish)
 
-      setState({ dek, userId: resolvedUserId })
+      setState({ dek, userId: resolvedUserId, sessionToken })
       return { ok: true }
     } catch (err) {
       const message =
@@ -293,8 +322,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const logout = useCallback(() => {
-    setState({ dek: null, userId: null })
+    setState({ dek: null, userId: null, sessionToken: null })
   }, [])
+
+  const apiFetch = useCallback(
+    async (path: string, init: RequestInit = {}): Promise<Response> => {
+      const headers = new Headers(init.headers ?? {})
+      if (state.sessionToken && !headers.has('Authorization')) {
+        headers.set('Authorization', `Bearer ${state.sessionToken}`)
+      }
+      if (state.userId && !headers.has('X-User-Id')) {
+        headers.set('X-User-Id', state.userId)
+      }
+      if (init.body && !headers.has('Content-Type')) {
+        headers.set('Content-Type', 'application/json')
+      }
+      return fetch(`${WORKER_BASE}${path}`, {
+        ...init,
+        headers,
+        credentials: init.credentials ?? 'include',
+      })
+    },
+    [state.sessionToken, state.userId],
+  )
 
   const value = useMemo<AuthContextValue>(
     () => ({
@@ -303,8 +353,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       enrol,
       login,
       logout,
+      apiFetch,
     }),
-    [state, enrol, login, logout],
+    [state, enrol, login, logout, apiFetch],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

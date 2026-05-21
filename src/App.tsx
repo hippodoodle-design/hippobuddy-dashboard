@@ -5,6 +5,7 @@ import Home from './routes/Home'
 import Enrol from './routes/Enrol'
 import Login from './routes/Login'
 import Dashboard from './routes/Dashboard'
+import Import from './routes/Import'
 
 export default function App() {
   return (
@@ -19,6 +20,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/import"
+            element={
+              <ProtectedRoute>
+                <Import />
               </ProtectedRoute>
             }
           />
