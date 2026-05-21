@@ -203,9 +203,15 @@ type BeginAuthenticationResponse = {
   prfSalt?: string
 }
 
+// /authenticate/finish canonically returns { session_token, expires_at, scopes, device_id }.
+// /register/finish currently returns no token (only authenticate/finish issues one).
+// Camelcase + alternate-name fallbacks kept defensively in case the contract ever shifts.
 type FinishResponse = {
   ok?: boolean
   userId?: string
+  session_token?: string
+  device_id?: string | null
+  expires_at?: string
   token?: string
   sessionToken?: string
   accessToken?: string
@@ -235,6 +241,7 @@ function extractRequestOptions(
 
 function extractSessionToken(finish: FinishResponse): string | null {
   return (
+    finish.session_token ??
     finish.token ??
     finish.sessionToken ??
     finish.accessToken ??
