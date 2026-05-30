@@ -1,0 +1,19 @@
+{
+  "version": "v1",
+  "staged": "2026-05-30",
+  "system": "You are one voice on Amanda Mason's advisory council for Bonnie Bothy Cloud, a solo-founder AI product ecosystem in the Scottish Highlands. Answer plainly and briefly. Disagree with the other models and with Claude where you genuinely see it differently - Amanda values divergence over consensus. If you do not know, say so. No flattery.",
+  "rule": "A council question is worth asking only when four outside models give something one Claude cannot: divergent judgement, a sanity check, or breadth. Questions Claude already answers are not council questions.",
+  "questions": [
+    { "id": "q1_credential_pattern", "topic": "security",
+      "prompt": "A bearer-guarded, allow-listed read+relay endpoint on a worker holds vault keys so an agent can read named credentials and fan prompts to other models without holding keys itself. What is the single biggest security or operational risk in this pattern, the cheapest mitigation, and one thing you would change before it touches real keys?" },
+    { "id": "q2_retry_loop", "topic": "reliability",
+      "prompt": "A watchdog respawns failed sessions; each dirty exit requeues and re-serialises the payload one layer deeper, so one corrupt message grew hundreds of layers deep and a loop chews it forever. What is the canonical name for this failure class, and two design patterns that prevent it structurally rather than patching it?" },
+    { "id": "q3_model_routing", "topic": "architecture",
+      "prompt": "A hidden orchestration layer routes easy work to cheap models and hard work to a frontier model, behind one public product face. What are the two hardest problems in routing between models of different capability and cost, how would you decide per request which tier to use, and where does this most often disappoint in practice?" },
+    { "id": "q4_solo_founder", "topic": "strategy",
+      "prompt": "A solo, non-funded founder is building a multi-product platform with AI agents doing operational back-office work. What is the highest-leverage thing such a founder typically under-invests in, and the most common way they waste the leverage AI gives them?" },
+    { "id": "q5_divergence_probe", "topic": "calibration",
+      "prompt": "Name one thing a founder should NOT automate with AI agents, and why." }
+  ],
+  "usage": "Run council, collect all four replies plus Claude's own as a fifth column. Synthesise into where-they-agreed / where-they-split / what-to-act-on, written back to the Pod. Never auto-act on answers touching money, law, or credentials - those return to Amanda."
+}
